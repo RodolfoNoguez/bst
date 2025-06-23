@@ -140,22 +140,52 @@ class Tree{
     }
 
     height(value){
-        return heightRec(this.root, value, 0);
+        if(value === null){return -1;}
+        const leftHeight = this.height(value.left);
+        const rightHeight = this.height(value.right);
+        return Math.max(leftHeight, rightHeight) + 1;
     }
+
     
-    heightRec(node, value, height){
+
+
+    depth(value){
+        return this.depthRec(this.root, value, 0);
+    }
+    depthRec(node, value, depth){
         if(node === null){return -1;}
 
         if(value < node.data){
-            return this.heightRec(node.left, value, height + 1);
+            return this.depthRec(node.left, value, depth + 1);
         }else if(value > node.data){
-            return this.heightRec(node.right, value, height + 1);
+            return this.depthRec(node.right, value, depth + 1);
         }else{
-            return height;
+            return depth;
         }
     }
 
+    isBalanced(){
+        return this.isBalancedRec(this.root);
+    }
+    isBalancedRec(node){
+        if(node === null){return true;}
 
+        const leftHeight = this.height(node.left);
+        if(leftHeight === -1){return -1;}
+        const rightHeight = this.height(node.right);
+        if(rightHeight === -1){return -1;}
 
+        if(Math.abs(leftHeight - rightHeight) > 1){return false;}
+
+        return this.isBalancedRec(node.left) && this.isBalancedRec(node.right);
+    }
+
+    reBalance(){
+        if(this.isBalanced()){return;}
+
+        const sortedArray = [];
+        this.inOrder((node) => sortedArray.push(node.data));
+        this.root = this.buildTree(sortedArray);
+    }
 
 }
